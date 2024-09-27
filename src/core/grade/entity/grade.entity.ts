@@ -9,6 +9,7 @@ import BaseEntity from '../../../common/utils/base.entity';
 import User from 'src/core/authorization/entity/user.entity';
 import UserGrade from './user.grade.entity';
 import SubjectGrade from './subject.grade.entity';
+import Assessment from 'src/core/assessment/entity/assessment.entity';
 
 @Entity()
 class Grade extends BaseEntity {
@@ -29,6 +30,9 @@ class Grade extends BaseEntity {
 
   @OneToMany(() => SubjectGrade, (subjectGrade) => subjectGrade.grade)
   public gradeSubjects?: SubjectGrade[];
+
+  @OneToMany(() => Assessment, (assessment) => assessment.grade)
+  public gradeAssessments?: Assessment[];
 }
 
 export default Grade;
