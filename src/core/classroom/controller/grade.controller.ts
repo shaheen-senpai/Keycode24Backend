@@ -1,19 +1,21 @@
-import { Controller, Get, Res, Param } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { Controller, Get, Res, Param, Req } from '@nestjs/common';
 import { GradeService } from '../service/grade.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
+import { UseAuthGuard } from 'src/core/authorization/authentication.decarator';
 
 @Controller('grade')
 export class GradeController {
   constructor(private gradeService: GradeService) {}
 
-  @Get('/:teacherId')
-  async getAllGrades(
-    @Param('teacherId') teacherId: string,
-    @Res() response: Response,
-  ) {
+  @UseAuthGuard()
+  @Get('/')
+  async getAllGrades(@Req() request: Request, @Res() response: Response) {
     try {
+      //@ts-ignore
+      const user = request.user as AuthUser;
       const grades = await this.gradeService.getAllGrades({
-        createdById: teacherId,
+        createdById: user.id,
       });
       return response.status(200).json({ grades });
     } catch (error) {
@@ -21,15 +23,14 @@ export class GradeController {
     }
   }
 
-  @Get('/:teacherId/:id')
-  async getGradeById(
-    @Param('id') id: string,
-    @Param('teacherId') teacherId: string,
-    @Res() response: Response,
-  ) {
+  @UseAuthGuard()
+  @Get('/:id')
+  async getGradeById(@Param('id') id: string, @Res() response: Response) {
     try {
+      //@ts-ignore
+      const user = request.user as AuthUser;
       const grade = await this.gradeService.getGradeById({
-        where: { createdById: teacherId, id },
+        where: { createdById: user.id, id },
       });
       return response.status(200).json({ grade });
     } catch (error) {

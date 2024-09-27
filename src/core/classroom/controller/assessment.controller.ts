@@ -1,15 +1,17 @@
-import { Controller, Get, Res, Param } from '@nestjs/common';
+import { Controller, Get, Res, Param, Query } from '@nestjs/common';
 import { Response } from 'express';
 import { AssessmentService } from '../service/assessment.service';
+import { UseAuthGuard } from 'src/core/authorization/authentication.decarator';
 
 @Controller('assessment')
 export class AssessmentController {
   constructor(private assessmentService: AssessmentService) {}
 
-  @Get('/:subjectId/:gradeId')
+  @UseAuthGuard()
+  @Get('/')
   async getAllAssessments(
-    @Param('subjectId') subjectId: string,
-    @Param('gradeId') gradeId: string,
+    @Query('subjectId') subjectId: string,
+    @Query('gradeId') gradeId: string,
     @Res() response: Response,
   ) {
     try {
@@ -23,10 +25,11 @@ export class AssessmentController {
     }
   }
 
-  @Get('/:subjectId/:gradeId/:id')
+  @UseAuthGuard()
+  @Get('/:id')
   async getAssessmentById(
-    @Param('subjectId') subjectId: string,
-    @Param('gradeId') gradeId: string,
+    @Query('subjectId') subjectId: string,
+    @Query('gradeId') gradeId: string,
     @Param('id') id: string,
     @Res() response: Response,
   ) {
