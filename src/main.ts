@@ -9,7 +9,6 @@ import { initializeTransactionalContext } from 'typeorm-transactional';
 import { LoggerService } from './common/logger/logger.service';
 // import { requestIdBinder } from './core/authorization/logging.middleware';
 // import { Logging } from './core/authorization/constants/logging.constants';
-import { configureHandlebars } from './common/config/handlebars.config';
 import { getCORSOrigin } from './common/utils/general.utils';
 
 async function bootstrap() {
@@ -33,7 +32,6 @@ async function bootstrap() {
   app.use(cookieParser(configService.get('COOKIE_SECRET')));
   // app.useLogger(app.get(LoggerService));
   await app.listen(configService.get('PORT') || 4000);
-  configureHandlebars();
 
   logger.info(`Application is running on: ${await app.getUrl()}`);
 }

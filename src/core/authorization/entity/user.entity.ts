@@ -6,7 +6,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import BaseEntity from '../../../common/utils/base.entity';
-import Grade from 'src/core/grade/entity/grade.entity';
+import Grade from './grade.entity';
 
 @Entity()
 class User extends BaseEntity {
