@@ -44,7 +44,7 @@ export function dateFormatter(
 }
 
 export const getCORSOrigin = () => {
-  return /https?:\/\/.*\.localhost\.com(:\d+)?$/;
+  return '*';
 };
 
 /**
