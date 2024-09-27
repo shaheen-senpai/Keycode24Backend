@@ -14,7 +14,7 @@ export class ChatController {
    * @returns The newly created chat
    */
   @UseAuthGuard()
-  @Post()
+  @Post('/create')
   async createChat(
     @Body('name') name: string,
     @Req() request: Request,
@@ -32,12 +32,9 @@ export class ChatController {
    * @param chatId The ID of the chat
    * @returns The chat with the given ID
    */
-  @Get(':chatId')
-  async getChatById(
-    @Param('chatId') chatId: string,
-    @Res() response: Response,
-  ) {
-    const chat = await this.chatService.getChatById(chatId);
+  @Post('/message/:id')
+  async getChatById(@Param('id') id: string, @Res() response: Response) {
+    const chat = await this.chatService.getChatById(id);
     return response.status(200).json(chat);
   }
 
@@ -46,7 +43,7 @@ export class ChatController {
    * @returns A list of all chats
    */
   @UseAuthGuard()
-  @Get()
+  @Post('/list')
   async getAllChats(@Req() request: Request, @Res() response: Response) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore

@@ -39,7 +39,7 @@ export class ChatMessageController {
    * @param chatId The ID of the chat
    * @returns A list of messages in the chat
    */
-  @Get()
+  @Post('list')
   async getMessagesByChatId(
     @Param('chatId') chatId: string,
     @Res() response: Response,

@@ -7,9 +7,10 @@ import {
 } from 'typeorm';
 import User from './../../authorization/entity/user.entity';
 import Chat from './chat.entity';
+import BaseEntity from '../../../common/utils/base.entity';
 
 @Entity()
-class ChatMessage {
+class ChatMessage extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   public id!: string;
 
