@@ -38,7 +38,6 @@ export class LessonPlanController {
     }
   }
 
-  @UseAuthGuard()
   @Post('/user/:userId')
   async getLessonPlansByUser(
     @Param('userId') userId: string,
@@ -53,7 +52,6 @@ export class LessonPlanController {
     }
   }
 
-  @UseAuthGuard()
   @Post('/:id')
   async getLessonPlanById(@Param('id') id: string, @Res() response: Response) {
     try {
