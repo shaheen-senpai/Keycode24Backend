@@ -102,7 +102,13 @@ export class AssessmentService extends BaseService<Assessment> {
   async getAllAssessments(
     where: FindOptionsWhere<Assessment>,
   ): Promise<Assessment[]> {
-    return await this.assessmentRepository.find({ where, relations: ['createdBy', 'subject', 'grade'] });
+    const assesments =  await this.assessmentRepository.find({ where, relations: ['createdBy', 'subject', 'grade'] });
+    await Promise.all(
+      assesments.map(async (assessment) => {
+        assessment.avgScore = await this.getAverageScore(null, assessment.id);
+      })
+    );
+    return assesments;
   }
 
   async getAverageScore(

@@ -52,9 +52,7 @@ export class UserController {
 
   @Post('student/:id')
   async getStudentById(@Param('id') id: string, @Res() response: Response) {
-    const userobj = await this.userService.findOneOrFail({
-      where: { id, type: 'student' },
-    });
+    const userobj = await this.userService.getUserById(id);
     return response.status(200).json(userobj);
   }
 }

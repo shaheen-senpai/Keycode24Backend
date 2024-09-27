@@ -12,10 +12,14 @@ import { Response, Request } from 'express';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { StudentAssessmentService } from '../service/student.assessment';
 import { UseAuthGuard } from 'src/core/authorization/authentication.decarator';
+import { AssessmentService } from '../service/assessment.service';
 
 @Controller('student-assessment')
 export class StudentAssessmentController {
-  constructor(private studentAssessmentService: StudentAssessmentService) {}
+  constructor(
+    private studentAssessmentService: StudentAssessmentService,
+    private assessmentService: AssessmentService,
+    ) {}
 
   @UseAuthGuard()
   @UseInterceptors(AnyFilesInterceptor())
@@ -51,8 +55,13 @@ export class StudentAssessmentController {
       //@ts-ignore
       const studentAssessments = await this.studentAssessmentService.find({
         where: { userId: studentId },
-        relations: ['assessment', 'user'],
+        relations: ['assessment', 'user', 'assessment.subject', 'assessment.grade'],
       });
+      await Promise.all(
+        studentAssessments.map(async (el) => {
+          el.assessment!.avgScore = await this.assessmentService.getAverageScore(null, el.assessment!.id);
+        })
+      );
       return response.status(200).json({ studentAssessments });
     } catch (error) {
       return response.status(400).json(error);
