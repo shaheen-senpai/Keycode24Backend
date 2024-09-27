@@ -54,7 +54,10 @@ export class ChatService {
    * Get all chats created by a user
    * @returns List of all chats
    */
-  async getAllChats(): Promise<Chat[]> {
-    return await this.chatRepository.find({ relations: ['recentMessage'] });
+  async getAllChats(userId: string): Promise<Chat[]> {
+    return await this.chatRepository.find({
+      where: { createdById: userId },
+      relations: ['recentMessage'],
+    });
   }
 }

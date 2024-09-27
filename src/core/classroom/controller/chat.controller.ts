@@ -1,11 +1,8 @@
 import { Controller, Get, Post, Param, Body, Req, Res } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { ChatService } from '../service/chat.service';
-import Chat from '../entity/chat.entity';
 import { UseAuthGuard } from 'src/core/authorization/authentication.decarator';
 import { AuthUser } from 'src/core/authorization/authorization.constants';
-import { HttpStatusCode } from 'axios';
-import { Http } from 'winston/lib/winston/transports';
 
 @Controller('chats')
 export class ChatController {
@@ -21,12 +18,13 @@ export class ChatController {
   async createChat(
     @Body('name') name: string,
     @Req() request: Request,
-  ): Promise<Chat> {
+    @Res() response: Response,
+  ) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     const user = request.user as AuthUser;
     const chat = await this.chatService.createChat(name, user.id);
-    return chat;
+    return response.status(201).json(chat);
   }
 
   /**
@@ -35,19 +33,25 @@ export class ChatController {
    * @returns The chat with the given ID
    */
   @Get(':chatId')
-  async getChatById(@Param('chatId') chatId: string): Promise<Chat> {
-    return await this.chatService.getChatById(chatId);
+  async getChatById(
+    @Param('chatId') chatId: string,
+    @Res() response: Response,
+  ) {
+    const chat = await this.chatService.getChatById(chatId);
+    return response.status(200).json(chat);
   }
 
   /**
    * Get all chats
    * @returns A list of all chats
    */
+  @UseAuthGuard()
   @Get()
-  async getAllChats(
-    @Req() request: Request,
-    @Res() response: Response,
-  ): Promise<Chat[]> {
-    return await this.chatService.getAllChats();
+  async getAllChats(@Req() request: Request, @Res() response: Response) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    const user = request.user as AuthUser;
+    const chats = await this.chatService.getAllChats(user.id);
+    return response.status(200).json(chats);
   }
 }

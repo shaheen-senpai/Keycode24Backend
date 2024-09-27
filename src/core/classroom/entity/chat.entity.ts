@@ -26,7 +26,6 @@ class Chat {
   public recentMessage?: ChatMessage; // Reference to the last sent message
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'createdBy' }) // This creates a foreign key column in the Chat table
   public createdBy?: User; // Reference to the user who created the chat
 
   @Column({ type: 'uuid' })

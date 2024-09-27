@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Req, Res } from '@nestjs/common';
+import { Response, Request } from 'express';
 import { ChatMessageService } from './../service/chat.message.service';
 import ChatMessage from '../entity/chat.message.entity';
+import { UseAuthGuard } from 'src/core/authorization/authentication.decarator';
 
 @Controller('chats/:chatId/messages')
 export class ChatMessageController {
@@ -13,13 +15,23 @@ export class ChatMessageController {
    * @param content The content of the message
    * @returns The saved message
    */
+  @UseAuthGuard()
   @Post()
   async sendMessage(
     @Param('chatId') chatId: string,
-    @Body('senderId') senderId: string,
     @Body('content') content: string,
-  ): Promise<ChatMessage> {
-    return await this.chatMessageService.sendMessage(chatId, senderId, content);
+    @Req() request: Request,
+    @Res() response: Response,
+  ) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    const user = request.user as AuthUser;
+    const res = await this.chatMessageService.sendMessage(
+      chatId,
+      user.id,
+      content,
+    );
+    return response.status(201).json(res);
   }
 
   /**
@@ -30,8 +42,10 @@ export class ChatMessageController {
   @Get()
   async getMessagesByChatId(
     @Param('chatId') chatId: string,
-  ): Promise<ChatMessage[]> {
-    return await this.chatMessageService.getMessagesByChatId(chatId);
+    @Res() response: Response,
+  ) {
+    const res = await this.chatMessageService.getMessagesByChatId(chatId);
+    return response.status(200).json(res);
   }
 
   /**
