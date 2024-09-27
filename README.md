@@ -36,22 +36,37 @@ This repository contains the backend service developed for **KeyCode2024** hacka
    npm install
    ```
 
-3. **Configure environment variables**:
-   - Create a `.env` file using the example below:
-     ```bash
-     DATABASE_URL=your-database-url
-     JWT_SECRET=your-jwt-secret
-     ```
+## Running the App
 
-4. **Run the application**:
-   ```bash
-   npm run start
-   ```
+1. **Create Environment Files**:
+   - Create a `.env` file and copy the data from `env.sample`. Make sure to fill in all required values.
+   - Create a `docker.env` file and copy the data from `docker.env.sample`. Enter all necessary values for Docker.
 
-5. **Run the application in development mode**:
-   ```bash
-   npm run start:dev
-   ```
+2. **Set Up Database**:
+   - After running the `docker-compose up` command, ensure the database is created (if it doesn't exist).
+   - Update the database name and credentials in the `.env` file, and proceed with the following steps.
+
+### Development
+
+Run the following commands to start the development environment:
+
+```bash
+# Start the Docker containers
+$ docker-compose up
+
+# Run database migrations
+$ npm run run-migrations
+
+# Start the app in debug mode
+$ npm run start:debug
+
+Run following command to generate migration
+$ npm run generate-migration --name=migrationFileName
+
+# production
+$ npm run start:server
+
+```
 
 ## API Documentation
 
