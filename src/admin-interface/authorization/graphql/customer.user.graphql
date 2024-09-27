@@ -1,6 +1,0 @@
-type GetUsersOutput {
-  users: [User]
-}
-type Query {
-  getUsers: GetUsersOutput
-}

@@ -2,9 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { DatabaseModule } from './common/database/database.module';
-import { AppGraphQLModule } from './common/graphql/graphql.module';
 import { HealthModule } from './common/health/health.module';
-import { AdminModule } from './admin-interface/admin.module';
 import * as coreModules from './core/index';
 import { CustomerModule } from './customer-interface/customer.module';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -29,10 +27,8 @@ import Joi from 'joi';
       }),
     }),
     ScheduleModule.forRoot(),
-    AppGraphQLModule,
     DatabaseModule,
     HealthModule,
-    AdminModule,
     CustomerModule,
     ...Object.values(coreModules),
   ],

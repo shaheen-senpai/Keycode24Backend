@@ -6,8 +6,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import BaseEntity from '../../../common/utils/base.entity';
-import UserGroup from './user.group.entity';
-import UserPermission from './user.permission.entity';
+import Grade from 'src/core/grade/entity/grade.entity';
 
 @Entity()
 class User extends BaseEntity {
@@ -15,19 +14,16 @@ class User extends BaseEntity {
   public id!: string;
 
   @Column({ type: 'varchar', nullable: true })
-  public firstName!: string | null;
-
-  @Column({ type: 'varchar', nullable: true })
-  public lastName!: string | null;
+  public name!: string | null;
 
   @Column({ type: 'varchar', nullable: true })
   public email!: string | null;
 
-  @Column({ type: 'varchar', nullable: false })
-  public phone!: string;
+  @Column({ type: 'varchar', nullable: true })
+  public phone!: string | null;
 
-  @Column({ default: false })
-  public isPhoneVerified!: boolean;
+  @Column({ type: 'varchar', nullable: true })
+  public type!: string | null;
 
   @Column({ type: 'varchar', nullable: true })
   public password!: string | null;
@@ -35,20 +31,11 @@ class User extends BaseEntity {
   @Column({ type: 'date', nullable: true })
   public dob!: Date | null;
 
+  @OneToMany(() => Grade, (grade) => grade.createdBy)
+  public createdGrades?: Grade[];
+
   @DeleteDateColumn()
   public deletedAt?: Date;
-
-  // Relations
-  @OneToMany(() => UserGroup, (userGroup) => userGroup.user)
-  public userGroups!: UserGroup[];
-
-  @OneToMany(() => UserPermission, (userPermission) => userPermission.user)
-  public userPermissions!: UserPermission[];
-
-  // Derived Fields
-  public get fullName(): string {
-    return `${this.firstName || ''}${this.lastName ? ` ${this.lastName}` : ''}`;
-  }
 }
 
 export default User;
