@@ -7,9 +7,9 @@ import {
 } from 'typeorm';
 import BaseEntity from '../../../common/utils/base.entity';
 import User from 'src/core/authorization/entity/user.entity';
-import UserGrade from './user.grade.entity';
 import SubjectGrade from './subject.grade.entity';
-import Assessment from 'src/core/assessment/entity/assessment.entity';
+import UserGrade from './user.grade.entity';
+import Assessment from './assessment.entity';
 
 @Entity()
 class Grade extends BaseEntity {

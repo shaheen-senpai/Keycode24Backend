@@ -7,9 +7,9 @@ import {
   OneToMany,
 } from 'typeorm';
 import BaseEntity from '../../../common/utils/base.entity';
-import Grade from 'src/core/grade/entity/grade.entity';
-import Subject from 'src/core/subject/entity/subject.entity';
-import Question from 'src/core/question/entity/question.entity';
+import Grade from './grade.entity';
+import Subject from './subject.entity';
+import Question from './question.entity';
 
 @Entity()
 class Assessment extends BaseEntity {

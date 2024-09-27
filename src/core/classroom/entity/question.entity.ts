@@ -6,7 +6,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import BaseEntity from '../../../common/utils/base.entity';
-import Assessment from 'src/core/assessment/entity/assessment.entity';
+import Assessment from './assessment.entity';
 
 @Entity()
 class Question extends BaseEntity {
