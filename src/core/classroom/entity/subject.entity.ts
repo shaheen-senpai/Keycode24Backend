@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import BaseEntity from '../../../common/utils/base.entity';
 import Assessment from './assessment.entity';
-import LessonPlan from './lesson-plain.entity';
+import LessonPlan from './lesson.plan.entity';
 import User from 'src/core/authorization/entity/user.entity';
 
 @Entity()
