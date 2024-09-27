@@ -116,4 +116,13 @@ export class SubjectService extends BaseService<Subject> {
     // Handle the file and input data here
     // For example, save the file to the filesystem or a database
   }
+
+  /**
+   * Function to get all subjects
+   * @returns list of subjects
+   *
+   */
+  async getAllSubjects(): Promise<Subject[]> {
+    return await this.subjectRepository.find();
+  }
 }

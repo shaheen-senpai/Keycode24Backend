@@ -8,6 +8,8 @@ import {
 import BaseEntity from '../../../common/utils/base.entity';
 import Grade from 'src/core/classroom/entity/grade.entity';
 import Assessment from 'src/core/classroom/entity/assessment.entity';
+import ChatMessage from './../../classroom/entity/chat.message.entity';
+import Chat from 'src/core/classroom/entity/chat.entity';
 
 @Entity()
 class User extends BaseEntity {
@@ -37,6 +39,12 @@ class User extends BaseEntity {
 
   @OneToMany(() => Assessment, (assessment) => assessment.createdBy)
   public createdAssessments?: Assessment[];
+  // Relation to messages sent by the user
+  @OneToMany(() => ChatMessage, (chatMessage) => chatMessage.sender)
+  public messages!: ChatMessage[];
+
+  @OneToMany(() => Chat, (chat) => chat.createdBy)
+  public createdChats!: Chat[];
 
   @DeleteDateColumn()
   public deletedAt?: Date;
