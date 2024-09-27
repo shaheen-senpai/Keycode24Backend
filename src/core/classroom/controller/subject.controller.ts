@@ -39,7 +39,7 @@ export class SubjectController {
     }
   }
 
-  @Get('subjectsById/:id')
+  @Get('/:id')
   async getSubjectById(@Param('id') id: string, @Res() response: Response) {
     try {
       const subject = await this.subjectService.getSubjectById(id);
@@ -49,8 +49,11 @@ export class SubjectController {
     }
   }
 
-  @Get('subjects/:name')
-  async getSubject(@Param('name') name: string, @Res() response: Response) {
+  @Get('/:name')
+  async getSubjectByName(
+    @Param('name') name: string,
+    @Res() response: Response,
+  ) {
     try {
       const subject = await this.subjectService.getSubjectByCondition({
         name,

@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Res, UseInterceptors, Get, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Res,
+  UseInterceptors,
+  Get,
+  Req,
+} from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { Response, Request } from 'express';
 import UserService from '../service/user.service';
@@ -25,14 +33,11 @@ export class UserController {
 
   @UseAuthGuard()
   @Get('profile')
-  async getUser(
-    @Req() request: Request,
-    @Res() response: Response,
-  ) {
+  async getUser(@Req() request: Request, @Res() response: Response) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     const user = request.user as AuthUser;
     const userobj = await this.userService.findOneOrFail(user.id);
     return response.status(200).json(userobj);
   }
 }
-
