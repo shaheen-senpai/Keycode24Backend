@@ -11,6 +11,7 @@ import Question from './entity/question.entity';
 import Chat from './entity/chat.entity';
 import ChatMessage from './entity/chat.message.entity';
 import StudentAssessment from './entity/student.assesment.entity';
+import LessonPlan from './entity/lesson-plain.entity';
 
 import { GradeService } from './service/grade.service';
 import { SubjectGradeService } from './service/subject.grade.service';
@@ -20,6 +21,7 @@ import { AssessmentService } from './service/assessment.service';
 import { ChatService } from './service/chat.service';
 import { ChatMessageService } from './service/chat.message.service';
 import { StudentAssessmentService } from './service/student.assessment';
+import { LessonPlanService } from './service/lesson-plan.service';
 
 import { GradeController } from './controller/grade.controller';
 import { AssessmentController } from './controller/assessment.controller';
@@ -29,6 +31,7 @@ import { ChatMessageController } from './controller/chat.message.controller';
 import { AuthorizationModule } from '../authorization/authorization.module';
 import { QuestionService } from './service/question.service';
 import { StudentAssessmentController } from './controller/student.assessment.controller';
+import { LessonPlanController } from './controller/lesson-plan.controller';
 
 @Module({
   imports: [
@@ -42,6 +45,7 @@ import { StudentAssessmentController } from './controller/student.assessment.con
       Question,
       Chat,
       ChatMessage,
+      LessonPlan,
     ]),
     forwardRef(() => AuthorizationModule),
     ConfigModule,
@@ -56,6 +60,7 @@ import { StudentAssessmentController } from './controller/student.assessment.con
     QuestionService,
     ChatService,
     ChatMessageService,
+    LessonPlanService,
   ],
   controllers: [
     GradeController,
@@ -64,6 +69,7 @@ import { StudentAssessmentController } from './controller/student.assessment.con
     SubjectController,
     ChatController,
     ChatMessageController,
+    LessonPlanController,
   ],
   exports: [AssessmentService],
 })

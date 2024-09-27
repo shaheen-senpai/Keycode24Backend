@@ -17,6 +17,9 @@ class LessonPlan extends BaseEntity {
   @ManyToOne(() => User, (user) => user.createdLessonPlans)
   public createdBy?: User;
 
+  @Column({ nullable: true, type: 'uuid' })
+  public subjectId!: string | null;
+
   @ManyToOne(() => Subject, (Subject) => Subject.lessonPlans)
   public subject?: Subject;
 
