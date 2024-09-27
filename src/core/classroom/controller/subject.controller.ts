@@ -53,7 +53,7 @@ export class SubjectController {
     }
   }
 
-  @Get('/:name')
+  @Get('name/:name')
   async getSubjectByName(
     @Param('name') name: string,
     @Res() response: Response,
@@ -62,7 +62,7 @@ export class SubjectController {
       const subject = await this.subjectService.getSubjectByCondition({
         name,
       });
-      if (subject) {
+      if (subject === null) {
         return response.status(404).json({ message: 'No subjects found' });
       }
       return response.status(200).json(subject);
@@ -71,7 +71,7 @@ export class SubjectController {
     }
   }
 
-  @Get('/:gradeId')
+  @Get('grade/:gradeId')
   async getAllSubjects(
     @Param('gradeId') gradeId: string,
     @Res() response: Response,

@@ -64,8 +64,9 @@ export class AssessmentController {
     @Res() response: Response,
   ) {
     try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
-      const user = request.user;
+      const user = request.user as AuthUser;
       const assessment = await this.assessmentService.createAssessment(
         input,
         user,
