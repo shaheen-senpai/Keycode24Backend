@@ -6,6 +6,8 @@ import {
   EntityManager,
   FindOneOptions,
   FindOptionsWhere,
+  IsNull,
+  Not,
   ObjectLiteral,
   Repository,
 } from 'typeorm';
@@ -40,7 +42,7 @@ export default class UserService extends BaseService<User> {
     });
     if (user) {
       const avgScore = await this.assessmentService.getAverageScore(id, null);
-      return {...user, avgScore };
+      return { ...user, avgScore };
     }
     throw new UserNotFoundException(id);
   }
@@ -121,6 +123,18 @@ export default class UserService extends BaseService<User> {
       return existingUser;
     }
     return await this.usersRepository.save(user);
+  }
+
+  /**
+   * Function to get the total number of users
+   * @returns number
+   */
+  async getCounts() {
+    const studentCount = await this.usersRepository.count({
+      where: { type: 'student' },
+    });
+    const assesmentCount = await this.assessmentService.count({id: Not(IsNull())});
+    return { studentCount, assesmentCount, assesmentCompletedCount: 5, assesmentAvg: 72 };
   }
 
   @Transactional()

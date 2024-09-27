@@ -18,22 +18,18 @@ import { UseAuthGuard } from 'src/core/authorization/authentication.decarator';
 export class AssessmentController {
   constructor(private assessmentService: AssessmentService) {}
 
-  @UseAuthGuard()
   @Post('/list')
   async getAllAssessments(
     @Query('subjectId') subjectId: string,
     @Query('gradeId') gradeId: string,
-    @Req() request: Request,
     @Res() response: Response,
   ) {
     try {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
-      const user = request.user as AuthUser;
       const assessments = await this.assessmentService.getAllAssessments({
         gradeId,
         subjectId,
-        createdById: user.id,
       });
       return response.status(200).json({ assessments });
     } catch (error) {

@@ -55,4 +55,10 @@ export class UserController {
     const userobj = await this.userService.getUserById(id);
     return response.status(200).json(userobj);
   }
+
+  @Post('getCounts')
+  async getCounts(@Res() response: Response) {
+    const userobj = await this.userService.getCounts();
+    return response.status(200).json(userobj);
+  }
 }
