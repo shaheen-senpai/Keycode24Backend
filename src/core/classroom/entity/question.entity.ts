@@ -31,8 +31,8 @@ class Question extends BaseEntity {
   @Column({ nullable: true, type: 'varchar' })
   public type!: string | null;
 
-  @Column({ nullable: true, type: 'decimal', precision: 2, scale: 2 })
-  public weightage!: string | null;
+  @Column({ nullable: true, type: 'decimal', precision: 17, scale: 2 })
+  public weightage!: number | null;
 
   @DeleteDateColumn()
   public deletedAt?: Date;
