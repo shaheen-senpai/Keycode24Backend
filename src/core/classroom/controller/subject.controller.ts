@@ -53,7 +53,7 @@ export class SubjectController {
     }
   }
 
-  @Post('/:name')
+  @Post('/name/:name')
   async getSubjectByName(
     @Param('name') name: string,
     @Res() response: Response,

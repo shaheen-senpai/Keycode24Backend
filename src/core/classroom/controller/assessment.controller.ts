@@ -20,7 +20,7 @@ export class AssessmentController {
   constructor(private assessmentService: AssessmentService) {}
 
   @UseAuthGuard()
-  @Post('list')
+  @Post('/list')
   async getAllAssessments(
     @Query('subjectId') subjectId: string,
     @Query('gradeId') gradeId: string,
