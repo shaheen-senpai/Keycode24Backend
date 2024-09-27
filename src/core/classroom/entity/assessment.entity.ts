@@ -49,6 +49,8 @@ class Assessment extends BaseEntity {
 
   @DeleteDateColumn()
   public deletedAt?: Date;
+
+  public avgScore: number | null = 0;
 }
 
 export default Assessment;

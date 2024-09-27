@@ -63,7 +63,6 @@ export class AssessmentController {
     }
   }
 
-  @UseAuthGuard()
   @Post('/:id')
   async getAssessmentById(
     @Query('subjectId') subjectId: string,

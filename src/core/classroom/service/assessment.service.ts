@@ -34,7 +34,9 @@ export class AssessmentService extends BaseService<Assessment> {
   async getAssessmentById(
     options: FindOneOptions<Assessment>,
   ): Promise<Assessment> {
-    return await this.assessmentRepository.findOneOrFail(options);
+    const assesment =  await this.assessmentRepository.findOneOrFail(options);
+    const avgScore = await this.getAverageScore(null, assesment.id);
+    return {...assesment, avgScore };;
   }
 
   async createAssessment(
@@ -104,14 +106,16 @@ export class AssessmentService extends BaseService<Assessment> {
   }
 
   async getAverageScore(
-    userId: string,
+    userId?: string |null,
+    assessmentId?: string |null,
   ) {
-    const averagePrice = await this.studentAssessmentRepository
+    const query = this.studentAssessmentRepository
   .createQueryBuilder()
-  .where('user_id = :userId', { userId })
-  .select('AVG(score)', 'avgScore')
-  .getRawOne();
-  return averagePrice.avgScore ? averagePrice.avgScore : 0;
+  .select('AVG(score)', 'avgScore');
+  userId && query.andWhere('user_id = :userId', { userId });
+  assessmentId && query.andWhere('assessment_id = :assessmentId', { assessmentId });
+  const averagePrice = await query.getRawOne();
+  return averagePrice.avgScore ? parseInt(averagePrice.avgScore) : 0;
   }
 
   public async updateAssessmentQuestions(

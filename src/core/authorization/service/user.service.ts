@@ -39,7 +39,7 @@ export default class UserService extends BaseService<User> {
       relations: ['createdGrades'],
     });
     if (user) {
-      const avgScore = await this.assessmentService.getAverageScore(id);
+      const avgScore = await this.assessmentService.getAverageScore(id, null);
       return {...user, avgScore };
     }
     throw new UserNotFoundException(id);
