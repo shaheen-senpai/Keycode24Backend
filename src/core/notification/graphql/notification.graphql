@@ -1,0 +1,47 @@
+scalar JSONObject
+
+enum NotificationType {
+  System
+  SigningRequired
+  SigningCompleted
+  SigningDeclined
+  ApproverDeclined
+  AllApproversCompleted
+  RequestTemplateCompleted
+  AllCollaboratorsCompleted
+  DataCaptureCompleted
+  EventReminder
+  ContractShared
+  TaskAssigned
+  EventUserTagged
+  EventUserUnTagged
+  SignerSigningCompleted
+  FolderShared
+}
+
+# Notification
+type Notification {
+  id: ID!
+  userId: ID!
+  htmlMessage: String
+  message: String!
+  type: String!
+  readAt: String
+  data: JSONObject
+  createdAt: String
+  user: RestrictedUser
+}
+
+type GetUnreadUserNotificationsCountOutput {
+  unReadCount: Int
+}
+
+type GetUserNotificationsOutput {
+  notifications: [Notification]
+  pagination: PaginationOutput
+}
+
+input GetUserNotificationsInput {
+  pagination: PaginationInput!
+  isRead: Boolean
+}

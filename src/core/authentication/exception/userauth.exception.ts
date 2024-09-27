@@ -1,0 +1,39 @@
+import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+
+export class UserExistsException extends BadRequestException {
+  constructor(username: string) {
+    super(`User with username: ${username} exits. Cannot signup this user.`);
+  }
+}
+
+export class InvalidCredentialsException extends UnauthorizedException {
+  constructor() {
+    super({
+      error: 'Invalid credentials',
+    });
+  }
+}
+
+export class InvalidEmailException extends UnauthorizedException {
+  constructor() {
+    super({
+      error: 'Invalid email',
+    });
+  }
+}
+
+export class InvalidPayloadException extends BadRequestException {
+  constructor(message: string) {
+    super({
+      error: message,
+    });
+  }
+}
+
+export class GoogleSetupError extends BadRequestException {
+  constructor() {
+    super({
+      error: 'Google login is not supported.',
+    });
+  }
+}
