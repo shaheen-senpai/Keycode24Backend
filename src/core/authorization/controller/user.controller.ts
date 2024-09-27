@@ -3,8 +3,8 @@ import {
   Controller,
   Post,
   Res,
+  Param,
   UseInterceptors,
-  Get,
   Req,
 } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
@@ -46,6 +46,14 @@ export class UserController {
   async getStudents(@Req() request: Request, @Res() response: Response) {
     const userobj = await this.userService.find({
       where: { type: 'student' },
+    });
+    return response.status(200).json(userobj);
+  }
+
+  @Post('student/:id')
+  async getStudentById(@Param('id') id: string, @Res() response: Response) {
+    const userobj = await this.userService.findOneOrFail({
+      where: { id, type: 'student' },
     });
     return response.status(200).json(userobj);
   }
