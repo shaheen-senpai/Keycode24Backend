@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
   Controller,
-  Get,
   Res,
   Param,
   Query,
