@@ -41,6 +41,9 @@ class Assessment extends BaseEntity {
   @Column({ nullable: true, type: 'uuid' })
   public createdById!: string | null;
 
+  @Column('text', { array: true, nullable: true })
+  public outcomes!: string[] | null;
+
   @ManyToOne(() => User, (user) => user.createdAssessments)
   public createdBy?: User;
 

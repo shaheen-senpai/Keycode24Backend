@@ -43,6 +43,7 @@ export class AssessmentService extends BaseService<Assessment> {
       ...(input.gradeId && { gradeId: input.gradeId }),
       ...(input.subjectId && { subjectId: input.subjectId }),
       ...(input.level && { level: input.level }),
+      ...(input.outcomes.length && { outcomes: input.outcomes }),
       createdById: user.id,
     };
     const assessment = await this.assessmentRepository.save(assessmentObj);
