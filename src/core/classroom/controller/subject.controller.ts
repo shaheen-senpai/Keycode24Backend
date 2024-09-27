@@ -43,7 +43,7 @@ export class SubjectController {
     }
   }
 
-  @Get('/:id')
+  @Post('/:id')
   async getSubjectById(@Param('id') id: string, @Res() response: Response) {
     try {
       const subject = await this.subjectService.getSubjectById(id);
@@ -53,7 +53,7 @@ export class SubjectController {
     }
   }
 
-  @Get('name/:name')
+  @Post('/:name')
   async getSubjectByName(
     @Param('name') name: string,
     @Res() response: Response,
@@ -71,14 +71,15 @@ export class SubjectController {
     }
   }
 
-  @Get('grade/:gradeId')
+  @Post('list/:gradeId')
   async getAllSubjects(
     @Param('gradeId') gradeId: string,
     @Res() response: Response,
   ) {
     try {
-      const subjects =
-        await this.subjectGradeService.getAllSubjectsByGradeId(gradeId);
+      const subjects = await this.subjectGradeService.getAllSubjectsByGradeId(
+        gradeId,
+      );
       return response.status(200).json(subjects);
     } catch (error) {
       return response.status(400).json(error);

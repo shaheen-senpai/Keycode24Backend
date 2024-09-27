@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Controller, Get, Res, Param, Req } from '@nestjs/common';
+import { Controller, Get, Res, Param, Req, Post } from '@nestjs/common';
 import { GradeService } from '../service/grade.service';
 import { Response, Request } from 'express';
 import { UseAuthGuard } from 'src/core/authorization/authentication.decarator';
@@ -9,7 +9,7 @@ export class GradeController {
   constructor(private gradeService: GradeService) {}
 
   @UseAuthGuard()
-  @Get('/')
+  @Post('/list')
   async getAllGrades(@Req() request: Request, @Res() response: Response) {
     try {
       //@ts-ignore
@@ -24,7 +24,7 @@ export class GradeController {
   }
 
   @UseAuthGuard()
-  @Get('/:id')
+  @Post('/:id')
   async getGradeById(
     @Param('id') id: string,
     @Res() response: Response,
