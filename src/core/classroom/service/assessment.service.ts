@@ -11,12 +11,15 @@ import {
 import Assessment from '../entity/assessment.entity';
 import { QuestionService } from './question.service';
 import Question from '../entity/question.entity';
+import StudentAssessment from '../entity/student.assesment.entity';
 
 @Injectable()
 export class AssessmentService extends BaseService<Assessment> {
   constructor(
     @InjectRepository(Assessment)
     private readonly assessmentRepository: Repository<Assessment>,
+    @InjectRepository(StudentAssessment)
+    private readonly studentAssessmentRepository: Repository<StudentAssessment>,
     private questionService: QuestionService,
   ) {
     super(assessmentRepository);
@@ -98,6 +101,17 @@ export class AssessmentService extends BaseService<Assessment> {
     where: FindOptionsWhere<Assessment>,
   ): Promise<Assessment[]> {
     return await this.assessmentRepository.find({ where, relations: ['createdBy', 'subject', 'grade'] });
+  }
+
+  async getAverageScore(
+    userId: string,
+  ) {
+    const averagePrice = await this.studentAssessmentRepository
+  .createQueryBuilder()
+  .where('user_id = :userId', { userId })
+  .select('AVG(score)', 'avgScore')
+  .getRawOne();
+  return averagePrice.avgScore ? averagePrice.avgScore : 0;
   }
 
   public async updateAssessmentQuestions(

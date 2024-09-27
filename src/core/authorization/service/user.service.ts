@@ -14,12 +14,14 @@ import { CookieOptions, Response } from 'express';
 import { GeneralApplicationException } from '../../../common/exception/general.application.exception';
 import { Transactional } from 'typeorm-transactional';
 import { AuthenticationHelper } from './authentication.helper';
+import { AssessmentService } from 'src/core/classroom/service/assessment.service';
 
 @Injectable()
 export default class UserService extends BaseService<User> {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private assessmentService: AssessmentService,
     private authenticationHelper: AuthenticationHelper,
   ) {
     super(usersRepository);
@@ -31,13 +33,14 @@ export default class UserService extends BaseService<User> {
    * @param entityManager
    * @returns User
    */
-  async getUserById(id: string, entityManager?: EntityManager): Promise<User> {
-    const userRepo = entityManager
-      ? entityManager.getRepository(User)
-      : this.usersRepository;
-    const user = await userRepo.findOneBy({ id });
+  async getUserById(id: string): Promise<User> {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: ['createdGrades'],
+    });
     if (user) {
-      return user;
+      const avgScore = await this.assessmentService.getAverageScore(id);
+      return {...user, avgScore };
     }
     throw new UserNotFoundException(id);
   }
@@ -124,7 +127,10 @@ export default class UserService extends BaseService<User> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async login(input: any, response: Response) {
     const where: ObjectLiteral = { email: input.email };
-    const user = await this.findOneOrFail(where);
+    const user = await this.findOneOrFail({
+      where,
+      select: ['id', 'name', 'email', 'password'],
+    });
     if (!user)
       throw new GeneralApplicationException(
         `User not found. Please try with different credentials`,

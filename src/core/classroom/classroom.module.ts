@@ -1,6 +1,6 @@
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 
 import UserGrade from './entity/user.grade.entity';
 import SubjectGrade from './entity/subject.grade.entity';
@@ -43,7 +43,7 @@ import { StudentAssessmentController } from './controller/student.assessment.con
       Chat,
       ChatMessage,
     ]),
-    AuthorizationModule,
+    forwardRef(() => AuthorizationModule),
     ConfigModule,
   ],
   providers: [
@@ -65,6 +65,6 @@ import { StudentAssessmentController } from './controller/student.assessment.con
     ChatController,
     ChatMessageController,
   ],
-  exports: [],
+  exports: [AssessmentService],
 })
 export class ClassroomModule {}

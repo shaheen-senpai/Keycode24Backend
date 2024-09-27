@@ -28,7 +28,7 @@ class User extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   public type!: string | null;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', nullable: true, select: false })
   public password!: string | null;
 
   @Column({ type: 'date', nullable: true })
@@ -48,6 +48,8 @@ class User extends BaseEntity {
 
   @DeleteDateColumn()
   public deletedAt?: Date;
+
+  public avgScore: number | null = 0;
 }
 
 export default User;
