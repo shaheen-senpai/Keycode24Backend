@@ -44,9 +44,7 @@ export class UserController {
   @UseAuthGuard()
   @Post('list/students')
   async getStudents(@Req() request: Request, @Res() response: Response) {
-    const userobj = await this.userService.find({
-      where: { type: 'student' },
-    });
+    const userobj = await this.userService.getAllStudents({ type: 'student' });
     return response.status(200).json(userobj);
   }
 

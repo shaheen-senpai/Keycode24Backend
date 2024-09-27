@@ -125,6 +125,18 @@ export default class UserService extends BaseService<User> {
     return await this.usersRepository.save(user);
   }
 
+  async getAllStudents(
+    where: FindOptionsWhere<User>,
+  ): Promise<User[]> {
+    const students =  await this.usersRepository.find({ where});
+    await Promise.all(
+      students.map(async (student) => {
+        student.avgScore = await this.assessmentService.getAverageScore(student.id, null);
+      })
+    );
+    return students;
+  }
+
   /**
    * Function to get the total number of users
    * @returns number
