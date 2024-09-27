@@ -152,16 +152,9 @@ export default class UserService extends BaseService<User> {
     };
   }
 
-  async addtokenToResponse(
-    response: Response,
-    token: string,
-  ) {
+  async addtokenToResponse(response: Response, token: string) {
     const cookieOptions: CookieOptions = await this.getCookieOptions();
-    response.cookie(
-      'lecturaCookie',
-      token,
-      cookieOptions,
-    );
+    response.cookie('lecturaCookie', token, cookieOptions);
   }
 
   async getCookieOptions() {
