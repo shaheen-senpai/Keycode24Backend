@@ -9,7 +9,7 @@ import {
   Repository,
 } from 'typeorm';
 import Grade from '../entity/grade.entity'; // Adjust path accordingly
-import { GradeNotFoundException } from '../../authorization/exception/grade.exception'; // Create this exception
+import { GradeNotFoundException } from '../exception/grade.exception'; // Create this exception
 
 @Injectable()
 export class GradeService extends BaseService<Grade> {
