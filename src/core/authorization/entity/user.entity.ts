@@ -33,6 +33,9 @@ class User extends BaseEntity {
   @Column({ type: 'varchar', nullable: true, select: false })
   public password!: string | null;
 
+  @Column({ type: 'varchar', nullable: true })
+  public gender!: string | null;
+
   @Column({ type: 'date', nullable: true })
   public dob!: Date | null;
 
