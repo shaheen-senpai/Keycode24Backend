@@ -15,6 +15,7 @@ import { UserGradeService } from './service/user.grade.service';
 import { AssessmentService } from './service/assessment.service';
 import { AssessmentController } from './controller/assessment.controller';
 import { AuthorizationModule } from '../authorization/authorization.module';
+import { QuestionService } from './service/question.service';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AuthorizationModule } from '../authorization/authorization.module';
     SubjectService,
     UserGradeService,
     AssessmentService,
+    QuestionService,
   ],
   controllers: [GradeController, AssessmentController],
   exports: [],

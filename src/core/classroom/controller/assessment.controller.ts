@@ -1,5 +1,17 @@
-import { Controller, Get, Res, Param, Query } from '@nestjs/common';
-import { Response } from 'express';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import {
+  Controller,
+  Get,
+  Res,
+  Param,
+  Query,
+  Post,
+  Body,
+  Req,
+  UseInterceptors,
+} from '@nestjs/common';
+import { Response, Request } from 'express';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { AssessmentService } from '../service/assessment.service';
 import { UseAuthGuard } from 'src/core/authorization/authentication.decarator';
 
@@ -37,6 +49,27 @@ export class AssessmentController {
       const assessment = await this.assessmentService.getAssessmentById({
         where: { subjectId, id, gradeId },
       });
+      return response.status(200).json({ assessment });
+    } catch (error) {
+      return response.status(400).json(error);
+    }
+  }
+
+  @UseAuthGuard()
+  @UseInterceptors(AnyFilesInterceptor())
+  @Post('/')
+  async createAssessment(
+    @Body() input: { email: string; message: string },
+    @Req() request: Request,
+    @Res() response: Response,
+  ) {
+    try {
+      //@ts-ignore
+      const user = request.user;
+      const assessment = await this.assessmentService.createAssessment(
+        input,
+        user,
+      );
       return response.status(200).json({ assessment });
     } catch (error) {
       return response.status(400).json(error);
