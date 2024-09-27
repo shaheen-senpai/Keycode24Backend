@@ -62,6 +62,7 @@ export class LessonPlanService extends BaseService<LessonPlan> {
   async getLessonPlansByUser(userId: string): Promise<LessonPlan[]> {
     return await this.lessonPlanRepository.find({
       where: { createdById: userId },
+      relations: ['subject'],
     });
   }
 }
