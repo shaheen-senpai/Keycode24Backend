@@ -22,7 +22,7 @@ export class SubjectGradeService extends BaseService<SubjectGrade> {
   async getAllSubjectsByGradeId(gradeId: string): Promise<Subject[]> {
     const subjectGrades = await this.subjectGradeRepository.find({
       where: { gradeId },
-      relations: ['subject'],
+      relations: ['subject', 'subject.createdBy'],
     });
 
     // Map the subject grades to extract the subjects
