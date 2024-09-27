@@ -13,9 +13,7 @@ export class AuthenticationHelper {
    * @param dataToSign data to sign
    * @returns token
    */
-  public async generateSignedJWT(
-    dataToSign: ObjectLiteral,
-  ) {
+  public async generateSignedJWT(dataToSign: ObjectLiteral) {
     const secret = this.configService.get('JWT_SECRET') as string;
     const response = await jwt.sign({ ...dataToSign }, secret);
     return response;
@@ -26,10 +24,7 @@ export class AuthenticationHelper {
    * @param dataToVerify data to verify
    * @returns payload
    */
-  async verifySignedJWT(
-    dataToVerify: string,
-    ignoreExpiration = false,
-  ) {
+  async verifySignedJWT(dataToVerify: string, ignoreExpiration = false) {
     const secret = this.configService.get('JWT_SECRET') || '';
     try {
       const res: any = jwt.verify(dataToVerify, secret, { ignoreExpiration });
