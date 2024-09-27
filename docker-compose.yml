@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+
+  postgres:
+    container_name: myproject-postgres
+    image: postgres:16.1
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+    expose:
+      - '${POSTGRES_PORT}'
+    ports:
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+    volumes:
+      - postgres_volume:/postgresql/myproject
+    env_file:
+      - docker.env
+    networks:
+      - myprojectnet
+
+  redis:
+    container_name: myproject-cache
+    image: 'redis'
+    expose:
+      - '6379'
+    ports:
+      - '6378:6379'
+    env_file:
+      - docker.env
+    networks:
+      - myprojectnet
+
+networks:
+  myprojectnet:
+    driver: bridge
+volumes:
+  postgres_volume:

@@ -1,0 +1,25 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+      nodejs: 20
+  pre_build:
+    commands:
+      - aws s3 cp s3://$ENVIRONMENT_BUCKET/hr-portal-backend/prd.env .env
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+  build:
+    commands:
+      - echo Building the Docker image...   
+      - docker build --build-arg START_SCRIPT=prod -t service-repo .
+      - echo Migration runing
+      - npm install
+      - npm run run-migrations
+      - docker tag service-repo:latest $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:latest
+  post_build:
+    commands:
+      - printf '[{"name":"%s","imageUri":"%s:latest"}]' $CONTAINER_NAME $REPOSITORY_URI > imagedefinitions.json
+artifacts:
+    files: imagedefinitions.json
