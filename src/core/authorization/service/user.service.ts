@@ -126,9 +126,17 @@ export default class UserService extends BaseService<User> {
   }
 
   async getAllStudents(
-    where: FindOptionsWhere<User>,
+    sort: string
   ): Promise<User[]> {
-    const students =  await this.usersRepository.find({ where});
+    // const students =  await this.usersRepository.find({ where });
+    const query = this.usersRepository
+    .createQueryBuilder('user')
+    .where(`type = 'student'`);
+    if(sort){
+      query.addSelect('(select AVG(sa.score) from student_assessment sa where sa.user_id = user.id)', `score`) // Derived value
+      .orderBy('score', 'DESC');
+    }
+    const students = await query.getMany();
     await Promise.all(
       students.map(async (student) => {
         student.avgScore = await this.assessmentService.getAverageScore(student.id, null);

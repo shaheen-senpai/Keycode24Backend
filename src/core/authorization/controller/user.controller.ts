@@ -6,6 +6,7 @@ import {
   Param,
   UseInterceptors,
   Req,
+  Query,
 } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { Response, Request } from 'express';
@@ -43,8 +44,8 @@ export class UserController {
 
   @UseAuthGuard()
   @Post('list/students')
-  async getStudents(@Req() request: Request, @Res() response: Response) {
-    const userobj = await this.userService.getAllStudents({ type: 'student' });
+  async getStudents(@Req() request: Request, @Res() response: Response, @Query('sort') sort: string) {
+    const userobj = await this.userService.getAllStudents(sort);
     return response.status(200).json(userobj);
   }
 

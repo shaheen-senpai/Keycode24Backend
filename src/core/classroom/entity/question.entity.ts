@@ -32,7 +32,7 @@ class Question extends BaseEntity {
   public type!: string | null;
 
   @Column({ nullable: true, type: 'decimal', precision: 17, scale: 2 })
-  public weightage!: number | null;
+  public weightage!: string | null;
 
   @DeleteDateColumn()
   public deletedAt?: Date;
