@@ -1,5 +1,4 @@
 import BaseEntity from 'src/common/utils/base.entity';
-import Subject from 'src/core/subject/entity/subject.entity';
 import {
   Column,
   Entity,
@@ -9,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import Grade from './grade.entity';
+import Subject from './subject.entity';
 
 @Entity()
 class SubjectGrade extends BaseEntity {
