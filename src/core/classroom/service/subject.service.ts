@@ -9,7 +9,7 @@ import {
   Repository,
 } from 'typeorm';
 import Subject from '../entity/subject.entity';
-import { SubjectNotFoundException } from '../../authorization/exception/subject.exception';
+import { SubjectNotFoundException } from '../exception/subject.exception';
 
 @Injectable()
 export class SubjectService extends BaseService<Subject> {
@@ -103,5 +103,17 @@ export class SubjectService extends BaseService<Subject> {
       return existingSubject;
     }
     return await this.subjectRepository.save(subject);
+  }
+
+  /**
+   * function to create a subject
+   * @param name name of the subject
+   * @param file file object
+   * @returns subject object
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async create(name: string, file: Express.Multer.File) {
+    // Handle the file and input data here
+    // For example, save the file to the filesystem or a database
   }
 }

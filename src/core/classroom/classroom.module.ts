@@ -7,6 +7,13 @@ import Subject from './entity/subject.entity';
 import Grade from './entity/grade.entity';
 import Assessment from './entity/assessment.entity';
 import Question from './entity/question.entity';
+import { GradeController } from './controller/grade.controller';
+import { GradeService } from './service/grade.service';
+import { SubjectGradeService } from './service/subject.grade.service';
+import { SubjectService } from './service/subject.service';
+import { UserGradeService } from './service/user.grade.service';
+import { AssessmentService } from './service/assessment.service';
+import { AssessmentController } from './controller/assessment.controller';
 
 @Module({
   imports: [
@@ -20,8 +27,14 @@ import Question from './entity/question.entity';
     ]),
     ConfigModule,
   ],
-  providers: [],
-  controllers: [],
+  providers: [
+    GradeService,
+    SubjectGradeService,
+    SubjectService,
+    UserGradeService,
+    AssessmentService,
+  ],
+  controllers: [GradeController, AssessmentController],
   exports: [],
 })
 export class ClassroomModule {}
