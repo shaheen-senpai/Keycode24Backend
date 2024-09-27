@@ -113,8 +113,10 @@ export class SubjectService extends BaseService<Subject> {
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async create(name: string, file: Express.Multer.File) {
-    // Handle the file and input data here
-    // For example, save the file to the filesystem or a database
+    const subject = new Subject();
+    subject.name = name;
+    subject.fileUrl = 'fileUrl';
+    return await this.subjectRepository.save(subject);
   }
 
   /**

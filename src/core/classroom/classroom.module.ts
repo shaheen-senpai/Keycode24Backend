@@ -18,6 +18,7 @@ import { AssessmentService } from './service/assessment.service';
 import { ChatService } from './service/chat.service';
 import { ChatMessageService } from './service/chat.message.service';
 import { AssessmentController } from './controller/assessment.controller';
+import { SubjectController } from './controller/subject.controller';
 import { ChatController } from './controller/chat.controller';
 import { ChatMessageController } from './controller/chat.message.controller';
 import { AuthorizationModule } from '../authorization/authorization.module';
@@ -51,6 +52,7 @@ import { QuestionService } from './service/question.service';
   controllers: [
     GradeController,
     AssessmentController,
+    SubjectController,
     ChatController,
     ChatMessageController,
   ],

@@ -34,10 +34,10 @@ export class SubjectController {
           .status(400)
           .json({ message: 'Invalid file type. Only PDF files are allowed.' });
       }
-      await this.subjectService.create(input.name, file);
+      const subject = await this.subjectService.create(input.name, file);
       return response
         .status(200)
-        .json({ message: 'Subject created successfully' });
+        .json({ message: 'Subject created successfully', subject });
     } catch (error) {
       return response.status(400).json(error);
     }
