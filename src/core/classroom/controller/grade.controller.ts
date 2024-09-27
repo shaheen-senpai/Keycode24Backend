@@ -25,7 +25,11 @@ export class GradeController {
 
   @UseAuthGuard()
   @Get('/:id')
-  async getGradeById(@Param('id') id: string, @Res() response: Response) {
+  async getGradeById(
+    @Param('id') id: string,
+    @Res() response: Response,
+    @Req() request: Request,
+  ) {
     try {
       //@ts-ignore
       const user = request.user as AuthUser;
