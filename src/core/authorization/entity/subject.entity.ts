@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import BaseEntity from '../../../common/utils/base.entity';
+import Assessment from 'src/core/assessment/entity/assessment.entity';
 
 @Entity()
 class Subject extends BaseEntity {
@@ -11,6 +12,9 @@ class Subject extends BaseEntity {
 
   @Column({ type: 'varchar', nullable: true })
   public fileUrl!: string | null;
+
+  @OneToMany(() => Assessment, (assessment) => assessment.subject)
+  public subjectAssessments?: Assessment[];
 }
 
 export default Subject;
