@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import BaseEntity from '../../../common/utils/base.entity';
 import Grade from 'src/core/classroom/entity/grade.entity';
+import Assessment from 'src/core/classroom/entity/assessment.entity';
 
 @Entity()
 class User extends BaseEntity {
@@ -33,6 +34,9 @@ class User extends BaseEntity {
 
   @OneToMany(() => Grade, (grade) => grade.createdBy)
   public createdGrades?: Grade[];
+
+  @OneToMany(() => Assessment, (assessment) => assessment.createdBy)
+  public createdAssessments?: Assessment[];
 
   @DeleteDateColumn()
   public deletedAt?: Date;

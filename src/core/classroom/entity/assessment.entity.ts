@@ -10,6 +10,7 @@ import BaseEntity from '../../../common/utils/base.entity';
 import Grade from './grade.entity';
 import Subject from './subject.entity';
 import Question from './question.entity';
+import User from 'src/core/authorization/entity/user.entity';
 
 @Entity()
 class Assessment extends BaseEntity {
@@ -36,6 +37,12 @@ class Assessment extends BaseEntity {
 
   @Column({ nullable: true, type: 'varchar' })
   public level!: string | null;
+
+  @Column({ nullable: true, type: 'uuid' })
+  public createdById!: string | null;
+
+  @ManyToOne(() => User, (user) => user.createdAssessments)
+  public createdBy?: User;
 
   @DeleteDateColumn()
   public deletedAt?: Date;

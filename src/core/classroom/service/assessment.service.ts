@@ -4,16 +4,20 @@ import { BaseService } from 'src/common/utils/base.service';
 import {
   FindOneOptions,
   FindOptionsWhere,
+  In,
   ObjectLiteral,
   Repository,
 } from 'typeorm';
 import Assessment from '../entity/assessment.entity';
+import { QuestionService } from './question.service';
+import Question from '../entity/question.entity';
 
 @Injectable()
 export class AssessmentService extends BaseService<Assessment> {
   constructor(
     @InjectRepository(Assessment)
     private readonly assessmentRepository: Repository<Assessment>,
+    private questionService: QuestionService,
   ) {
     super(assessmentRepository);
   }
@@ -28,6 +32,22 @@ export class AssessmentService extends BaseService<Assessment> {
     options: FindOneOptions<Assessment>,
   ): Promise<Assessment> {
     return await this.assessmentRepository.findOneOrFail(options);
+  }
+
+  async createAssessment(
+    input: ObjectLiteral,
+    user: ObjectLiteral,
+  ): Promise<Assessment> {
+    const assessmentObj = {
+      ...(input.name && { name: input.name }),
+      ...(input.gradeId && { gradeId: input.gradeId }),
+      ...(input.subjectId && { subjectId: input.subjectId }),
+      ...(input.level && { level: input.level }),
+      createdById: user.id,
+    };
+    const assessment = await this.assessmentRepository.save(assessmentObj);
+    await this.updateAssessmentQuestions(assessment, input.questions);
+    return assessment;
   }
 
   /**
@@ -77,5 +97,47 @@ export class AssessmentService extends BaseService<Assessment> {
     where: FindOptionsWhere<Assessment>,
   ): Promise<Assessment[]> {
     return await this.assessmentRepository.find({ where });
+  }
+
+  public async updateAssessmentQuestions(
+    assessment: Assessment,
+    questions: Array<ObjectLiteral>,
+  ) {
+    const currentQuestions = await this.questionService.find({
+      where: {
+        assessmentId: assessment.id,
+      },
+    });
+    const questionsToBeDeleted = currentQuestions.filter(
+      (currentItem: Question) =>
+        !questions.some(
+          (newItem: ObjectLiteral) =>
+            newItem.questionText === currentItem.questionText,
+        ),
+    );
+    const questionsTobeCreated = questions.filter(
+      (newItem: ObjectLiteral) =>
+        !currentQuestions.some(
+          (currentItem: Question) =>
+            newItem.questionText === currentItem.questionText,
+        ),
+    );
+    questionsToBeDeleted &&
+      (await this.questionService.delete({
+        id: In(questionsToBeDeleted.map((item) => item.id)),
+      }));
+    questionsTobeCreated &&
+      (await this.questionService.insert(
+        questionsTobeCreated.map((item) => {
+          return {
+            assessmentId: assessment.id,
+            questionText: item.questionText,
+            options: item.options,
+            answer: item.answer,
+            type: item.type,
+            weightage: item.weightage,
+          } as unknown as Question;
+        }),
+      ));
   }
 }
