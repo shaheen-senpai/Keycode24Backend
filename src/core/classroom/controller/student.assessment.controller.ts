@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
-import { StudentAssessmentService } from '../service/student.assessment';
+import { StudentAssessmentService } from '../service/student.assessment.service';
 import { UseAuthGuard } from 'src/core/authorization/authentication.decarator';
 import { AssessmentService } from '../service/assessment.service';
 
@@ -19,13 +19,13 @@ export class StudentAssessmentController {
   constructor(
     private studentAssessmentService: StudentAssessmentService,
     private assessmentService: AssessmentService,
-    ) {}
+  ) {}
 
   @UseAuthGuard()
   @UseInterceptors(AnyFilesInterceptor())
   @Post('/create')
   async createAssessment(
-    @Body() input: { assessmentId: string; score: number },
+    @Body() questions: [{ id: string; userAnswer: string }],
     @Req() request: Request,
     @Res() response: Response,
   ) {
@@ -33,13 +33,15 @@ export class StudentAssessmentController {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       const user = request.user as AuthUser;
+      const { score, assessmentId } =
+        await this.studentAssessmentService.calculateScore(questions);
       const studentAssessment =
         await this.studentAssessmentService.saveStudentAssessment(
           user.id,
-          input.assessmentId,
-          input.score,
+          assessmentId,
+          score,
         );
-      return response.status(200).json({ studentAssessment });
+      return response.status(201).json({ studentAssessment });
     } catch (error) {
       return response.status(400).json(error);
     }
@@ -55,12 +57,21 @@ export class StudentAssessmentController {
       //@ts-ignore
       const studentAssessments = await this.studentAssessmentService.find({
         where: { userId: studentId },
-        relations: ['assessment', 'user', 'assessment.subject', 'assessment.grade'],
+        relations: [
+          'assessment',
+          'user',
+          'assessment.subject',
+          'assessment.grade',
+        ],
       });
       await Promise.all(
         studentAssessments.map(async (el) => {
-          el.assessment!.avgScore = await this.assessmentService.getAverageScore(null, el.assessment!.id);
-        })
+          el.assessment!.avgScore =
+            await this.assessmentService.getAverageScore(
+              null,
+              el.assessment!.id,
+            );
+        }),
       );
       return response.status(200).json({ studentAssessments });
     } catch (error) {

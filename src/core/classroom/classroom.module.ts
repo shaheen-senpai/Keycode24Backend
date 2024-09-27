@@ -20,7 +20,7 @@ import { UserGradeService } from './service/user.grade.service';
 import { AssessmentService } from './service/assessment.service';
 import { ChatService } from './service/chat.service';
 import { ChatMessageService } from './service/chat.message.service';
-import { StudentAssessmentService } from './service/student.assessment';
+import { StudentAssessmentService } from './service/student.assessment.service';
 import { LessonPlanService } from './service/lesson-plan.service';
 
 import { GradeController } from './controller/grade.controller';
