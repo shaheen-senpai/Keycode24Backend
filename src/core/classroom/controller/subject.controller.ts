@@ -11,11 +11,15 @@ import {
 import { Response } from 'express';
 import { Express } from 'express';
 import { SubjectService } from '../service/subject.service';
+import { SubjectGradeService } from '../service/subject.grade.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('subject')
 export class SubjectController {
-  constructor(private subjectService: SubjectService) {}
+  constructor(
+    private subjectService: SubjectService,
+    private subjectGradeService: SubjectGradeService,
+  ) {}
 
   @Post('create')
   @UseInterceptors(FileInterceptor('file'))
@@ -62,6 +66,20 @@ export class SubjectController {
         return response.status(404).json({ message: 'No subjects found' });
       }
       return response.status(200).json(subject);
+    } catch (error) {
+      return response.status(400).json(error);
+    }
+  }
+
+  @Get('/:gradeId')
+  async getAllSubjects(
+    @Param('gradeId') gradeId: string,
+    @Res() response: Response,
+  ) {
+    try {
+      const subjects =
+        await this.subjectGradeService.getAllSubjectsByGradeId(gradeId);
+      return response.status(200).json(subjects);
     } catch (error) {
       return response.status(400).json(error);
     }
