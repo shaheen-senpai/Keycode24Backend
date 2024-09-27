@@ -19,6 +19,9 @@ class LessonPlan extends BaseEntity {
 
   @ManyToOne(() => Subject, (Subject) => Subject.lessonPlans)
   public subject?: Subject;
+
+  @Column({ type: 'jsonb', nullable: true })
+  public data!: object | null;
 }
 
 export default LessonPlan;
