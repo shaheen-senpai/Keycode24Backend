@@ -14,6 +14,7 @@ import { SubjectService } from './service/subject.service';
 import { UserGradeService } from './service/user.grade.service';
 import { AssessmentService } from './service/assessment.service';
 import { AssessmentController } from './controller/assessment.controller';
+import { AuthorizationModule } from '../authorization/authorization.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AssessmentController } from './controller/assessment.controller';
       Assessment,
       Question,
     ]),
+    AuthorizationModule,
     ConfigModule,
   ],
   providers: [

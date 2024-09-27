@@ -10,6 +10,6 @@ import { ConfigModule } from '@nestjs/config';
   imports: [TypeOrmModule.forFeature([User]), ConfigModule],
   providers: [UserService, AuthenticationHelper],
   controllers: [UserController],
-  exports: [],
+  exports: [AuthenticationHelper],
 })
 export class AuthorizationModule {}
