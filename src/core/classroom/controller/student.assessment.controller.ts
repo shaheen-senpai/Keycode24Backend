@@ -22,10 +22,9 @@ export class StudentAssessmentController {
   ) {}
 
   @UseAuthGuard()
-  @UseInterceptors(AnyFilesInterceptor())
   @Post('/create')
   async createAssessment(
-    @Body() questions: [{ id: string; userAnswer: string }],
+    @Body('questions') questions: any,
     @Req() request: Request,
     @Res() response: Response,
   ) {
