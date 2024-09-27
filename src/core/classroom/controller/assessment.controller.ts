@@ -20,7 +20,7 @@ export class AssessmentController {
   constructor(private assessmentService: AssessmentService) {}
 
   @UseAuthGuard()
-  @Get('/')
+  @Post('list')
   async getAllAssessments(
     @Query('subjectId') subjectId: string,
     @Query('gradeId') gradeId: string,
@@ -38,7 +38,7 @@ export class AssessmentController {
   }
 
   @UseAuthGuard()
-  @Get('/:id')
+  @Post('/:id')
   async getAssessmentById(
     @Query('subjectId') subjectId: string,
     @Query('gradeId') gradeId: string,
@@ -57,9 +57,9 @@ export class AssessmentController {
 
   @UseAuthGuard()
   @UseInterceptors(AnyFilesInterceptor())
-  @Post('/')
+  @Post('/create')
   async createAssessment(
-    @Body() input: { email: string; message: string },
+    @Body() input: any,
     @Req() request: Request,
     @Res() response: Response,
   ) {
