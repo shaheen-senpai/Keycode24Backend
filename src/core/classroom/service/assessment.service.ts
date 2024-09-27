@@ -12,6 +12,8 @@ import Assessment from '../entity/assessment.entity';
 import { QuestionService } from './question.service';
 import Question from '../entity/question.entity';
 import StudentAssessment from '../entity/student.assesment.entity';
+import axios from 'axios';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AssessmentService extends BaseService<Assessment> {
@@ -21,6 +23,7 @@ export class AssessmentService extends BaseService<Assessment> {
     @InjectRepository(StudentAssessment)
     private readonly studentAssessmentRepository: Repository<StudentAssessment>,
     private questionService: QuestionService,
+    private configService: ConfigService,
   ) {
     super(assessmentRepository);
   }
@@ -34,9 +37,9 @@ export class AssessmentService extends BaseService<Assessment> {
   async getAssessmentById(
     options: FindOneOptions<Assessment>,
   ): Promise<Assessment> {
-    const assesment =  await this.assessmentRepository.findOneOrFail(options);
+    const assesment = await this.assessmentRepository.findOneOrFail(options);
     const avgScore = await this.getAverageScore(null, assesment.id);
-    return {...assesment, avgScore };;
+    return { ...assesment, avgScore };
   }
 
   async createAssessment(
@@ -47,11 +50,31 @@ export class AssessmentService extends BaseService<Assessment> {
       ...(input.name && { name: input.name }),
       ...(input.gradeId && { gradeId: input.gradeId }),
       ...(input.subjectId && { subjectId: input.subjectId }),
-      ...(input.level && { level: input.level }),
-      ...(input.outcomes.length && { outcomes: input.outcomes }),
       createdById: user.id,
     };
-    const assessment = await this.assessmentRepository.save(assessmentObj);
+    const mlInput = {
+      questions_data: input.questions.map((item: any) => {
+        return {
+          question: item.questionText,
+          choices: item.options,
+          answer: item.answer,
+          type: item.type,
+          weightage: item.weightage,
+        };
+      }),
+    };
+    const mlDomain = this.configService.get('ML_API');
+    const result = await axios.post(
+      `${mlDomain}/api/assessment/properties`,
+      mlInput,
+    );
+    const output = result.data;
+    const assessment = await this.assessmentRepository.save({
+      ...assessmentObj,
+      level: output.level,
+      outcomes: output.outcomes,
+      name: output.name,
+    });
     await this.updateAssessmentQuestions(assessment, input.questions);
     return assessment;
   }
@@ -102,26 +125,27 @@ export class AssessmentService extends BaseService<Assessment> {
   async getAllAssessments(
     where: FindOptionsWhere<Assessment>,
   ): Promise<Assessment[]> {
-    const assesments =  await this.assessmentRepository.find({ where, relations: ['createdBy', 'subject', 'grade'] });
+    const assesments = await this.assessmentRepository.find({
+      where,
+      relations: ['createdBy', 'subject', 'grade'],
+    });
     await Promise.all(
       assesments.map(async (assessment) => {
         assessment.avgScore = await this.getAverageScore(null, assessment.id);
-      })
+      }),
     );
     return assesments;
   }
 
-  async getAverageScore(
-    userId?: string |null,
-    assessmentId?: string |null,
-  ) {
+  async getAverageScore(userId?: string | null, assessmentId?: string | null) {
     const query = this.studentAssessmentRepository
-  .createQueryBuilder()
-  .select('AVG(score)', 'avgScore');
-  userId && query.andWhere('user_id = :userId', { userId });
-  assessmentId && query.andWhere('assessment_id = :assessmentId', { assessmentId });
-  const averagePrice = await query.getRawOne();
-  return averagePrice.avgScore ? parseInt(averagePrice.avgScore) : 0;
+      .createQueryBuilder()
+      .select('AVG(score)', 'avgScore');
+    userId && query.andWhere('user_id = :userId', { userId });
+    assessmentId &&
+      query.andWhere('assessment_id = :assessmentId', { assessmentId });
+    const averagePrice = await query.getRawOne();
+    return averagePrice.avgScore ? parseInt(averagePrice.avgScore) : 0;
   }
 
   public async updateAssessmentQuestions(
