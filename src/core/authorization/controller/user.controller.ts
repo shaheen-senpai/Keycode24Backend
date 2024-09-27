@@ -32,12 +32,12 @@ export class UserController {
   }
 
   @UseAuthGuard()
-  @Get('profile')
+  @Post('profile')
   async getUser(@Req() request: Request, @Res() response: Response) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     const user = request.user as AuthUser;
-    const userobj = await this.userService.findOneOrFail(user.id);
+    const userobj = await this.userService.findOneOrFail({where: {id: user.id}, relations: ['createdGrades']});
     return response.status(200).json(userobj);
   }
 }

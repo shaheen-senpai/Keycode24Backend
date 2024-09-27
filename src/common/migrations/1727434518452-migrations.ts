@@ -107,7 +107,7 @@ export class Migrations1727434518452 implements MigrationInterface {
 
     await queryRunner.query(`update public.user set password = $1, type=$2`, ['$2b$10$eX2xslSqm4Sq5s7BHg.Xp.aRwrXWYEvXVH1W4/gzFlJHQ0C2Hwvm2', 'student']);
   
-    await queryRunner.query(`update public.user set type=$1 where email = 'susan@gmail'`, ['teacher']);
+    await queryRunner.query(`update public.user set type=$1 where email = 'susan@gmail.com'`, ['teacher']);
     await queryRunner.query(`update public.user set type=$1 where email = 'john@gmail.com'`, ['parent']);
   }
 
