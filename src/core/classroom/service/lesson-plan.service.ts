@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/utils/base.service';
 import UserService from 'src/core/authorization/service/user.service';
 import { SubjectService } from 'src/core/classroom/service/subject.service';
-import LessonPlan from '../entity/lesson-plain.entity';
+import LessonPlan from '../entity/lesson.plan.entity';
 import { FindOneOptions, ObjectLiteral, Repository } from 'typeorm';
 
 @Injectable()

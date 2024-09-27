@@ -11,7 +11,7 @@ import Question from './entity/question.entity';
 import Chat from './entity/chat.entity';
 import ChatMessage from './entity/chat.message.entity';
 import StudentAssessment from './entity/student.assesment.entity';
-import LessonPlan from './entity/lesson-plain.entity';
+import LessonPlan from './entity/lesson.plan.entity';
 
 import { GradeService } from './service/grade.service';
 import { SubjectGradeService } from './service/subject.grade.service';
