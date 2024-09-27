@@ -22,14 +22,17 @@ class Question extends BaseEntity {
   @Column({ nullable: true, type: 'varchar' })
   public answer!: string | null;
 
-  @Column({ nullable: true, type: 'varchar' })
-  public level!: string | null;
-
   @ManyToOne(() => Assessment, (assessment) => assessment.assessmentQuestions)
   public assessment?: Assessment;
 
   @Column({ nullable: true, type: 'uuid' })
   public assessmentId!: string | null;
+
+  @Column({ nullable: true, type: 'varchar' })
+  public type!: string | null;
+
+  @Column({ nullable: true, type: 'decimal', precision: 2, scale: 2 })
+  public weightage!: string | null;
 
   @DeleteDateColumn()
   public deletedAt?: Date;

@@ -34,6 +34,9 @@ class Assessment extends BaseEntity {
   @OneToMany(() => Question, (question) => question.assessment)
   public assessmentQuestions?: Question[];
 
+  @Column({ nullable: true, type: 'varchar' })
+  public level!: string | null;
+
   @DeleteDateColumn()
   public deletedAt?: Date;
 }
