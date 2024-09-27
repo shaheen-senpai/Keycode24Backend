@@ -9,7 +9,7 @@ import {
   Repository,
 } from 'typeorm';
 import Subject from '../entity/subject.entity';
-import { SubjectNotFoundException } from '../exception/subject.exception';
+import { SubjectNotFoundException } from '../../authorization/exception/subject.exception';
 
 @Injectable()
 export class SubjectService extends BaseService<Subject> {

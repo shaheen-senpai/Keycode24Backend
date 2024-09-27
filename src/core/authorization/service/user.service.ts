@@ -121,6 +121,7 @@ export default class UserService extends BaseService<User> {
   }
 
   @Transactional()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async login(input: any, response: Response) {
     const where: ObjectLiteral = { email: input.email };
     const user = await this.findOneOrFail(where);
