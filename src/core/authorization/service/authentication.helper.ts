@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ObjectLiteral } from 'typeorm';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthenticationHelper {
@@ -36,5 +37,14 @@ export class AuthenticationHelper {
   }
   async isPasswordValid(plainTextPassword: string, hashedPassword: string) {
     return bcrypt.compare(plainTextPassword, hashedPassword);
+  }
+  
+  async extractTokenFromRequest(
+    request: Request,
+  ) {
+    const token =
+      request.signedCookies?.['lecturaCookie'] ||
+      request.headers.authorization?.split(' ')[1];
+    return token;
   }
 }

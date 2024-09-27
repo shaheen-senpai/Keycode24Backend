@@ -10,7 +10,7 @@ import {
   Repository,
 } from 'typeorm';
 import { UserNotFoundException } from '../exception/user.exception';
-import { Response } from 'express';
+import { CookieOptions, Response } from 'express';
 import { GeneralApplicationException } from '../../../common/exception/general.application.exception';
 import { Transactional } from 'typeorm-transactional';
 import { AuthenticationHelper } from './authentication.helper';
@@ -144,11 +144,35 @@ export default class UserService extends BaseService<User> {
       );
     //Succesfully logined and the user is a verified user
     const token = await this.authenticationHelper.generateSignedJWT({
-      userId: user.id,
+      id: user.id,
     });
-    // await this.addtokenToResponse(response, authResponse.token, userType);
+    await this.addtokenToResponse(response, token);
     return {
       token,
     };
+  }
+
+  async addtokenToResponse(
+    response: Response,
+    token: string,
+  ) {
+    const cookieOptions: CookieOptions = await this.getCookieOptions();
+    response.cookie(
+      'lecturaCookie',
+      token,
+      cookieOptions,
+    );
+  }
+
+  async getCookieOptions() {
+    const CookieOptions: CookieOptions = {
+      httpOnly: true,
+      signed: true,
+      domain: 'lectura.com',
+      secure: false,
+      // sameSite need to be none in order to work from 'localhost FE' to 'https BE'
+      sameSite: 'strict',
+    };
+    return CookieOptions;
   }
 }
