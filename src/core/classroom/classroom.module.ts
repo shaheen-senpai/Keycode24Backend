@@ -12,6 +12,8 @@ import { GradeService } from './service/grade.service';
 import { SubjectGradeService } from './service/subject.grade.service';
 import { SubjectService } from './service/subject.service';
 import { UserGradeService } from './service/user.grade.service';
+import { AssessmentService } from './service/assessment.service';
+import { AssessmentController } from './controller/assessment.controller';
 
 @Module({
   imports: [
@@ -30,8 +32,9 @@ import { UserGradeService } from './service/user.grade.service';
     SubjectGradeService,
     SubjectService,
     UserGradeService,
+    AssessmentService,
   ],
-  controllers: [GradeController],
+  controllers: [GradeController, AssessmentController],
   exports: [],
 })
 export class ClassroomModule {}
