@@ -57,6 +57,9 @@ class User extends BaseEntity {
   @OneToMany(() => Subject, (subject) => subject.createdBy)
   public createdSubjects?: Subject[];
 
+  @Column({ nullable: true, type: 'smallint' })
+  public rollNumber!: number | null;
+
   @DeleteDateColumn()
   public deletedAt?: Date;
 
