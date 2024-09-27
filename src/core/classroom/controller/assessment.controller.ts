@@ -42,24 +42,6 @@ export class AssessmentController {
   }
 
   @UseAuthGuard()
-  @Post('/:id')
-  async getAssessmentById(
-    @Query('subjectId') subjectId: string,
-    @Query('gradeId') gradeId: string,
-    @Param('id') id: string,
-    @Res() response: Response,
-  ) {
-    try {
-      const assessment = await this.assessmentService.getAssessmentById({
-        where: { subjectId, id, gradeId },
-      });
-      return response.status(200).json({ assessment });
-    } catch (error) {
-      return response.status(400).json(error);
-    }
-  }
-
-  @UseAuthGuard()
   @UseInterceptors(AnyFilesInterceptor())
   @Post('/create')
   async createAssessment(
@@ -75,6 +57,24 @@ export class AssessmentController {
         input,
         user,
       );
+      return response.status(200).json({ assessment });
+    } catch (error) {
+      return response.status(400).json(error);
+    }
+  }
+
+  @UseAuthGuard()
+  @Post('/:id')
+  async getAssessmentById(
+    @Query('subjectId') subjectId: string,
+    @Query('gradeId') gradeId: string,
+    @Param('id') id: string,
+    @Res() response: Response,
+  ) {
+    try {
+      const assessment = await this.assessmentService.getAssessmentById({
+        where: { subjectId, id, gradeId },
+      });
       return response.status(200).json({ assessment });
     } catch (error) {
       return response.status(400).json(error);

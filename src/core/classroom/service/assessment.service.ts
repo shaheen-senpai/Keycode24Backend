@@ -97,7 +97,7 @@ export class AssessmentService extends BaseService<Assessment> {
   async getAllAssessments(
     where: FindOptionsWhere<Assessment>,
   ): Promise<Assessment[]> {
-    return await this.assessmentRepository.find({ where });
+    return await this.assessmentRepository.find({ where, relations: ['createdBy', 'subject', 'grade'] });
   }
 
   public async updateAssessmentQuestions(
