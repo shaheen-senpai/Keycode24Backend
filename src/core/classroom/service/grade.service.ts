@@ -26,18 +26,8 @@ export class GradeService extends BaseService<Grade> {
    * @param entityManager
    * @returns Grade
    */
-  async getGradeById(
-    id: string,
-    entityManager?: EntityManager,
-  ): Promise<Grade> {
-    const gradeRepo = entityManager
-      ? entityManager.getRepository(Grade)
-      : this.gradeRepository;
-    const grade = await gradeRepo.findOneBy({ id });
-    if (grade) {
-      return grade;
-    }
-    throw new GradeNotFoundException(id);
+  async getGradeById(options: FindOneOptions<Grade>): Promise<Grade> {
+    return await this.gradeRepository.findOneOrFail(options);
   }
 
   /**
@@ -79,14 +69,8 @@ export class GradeService extends BaseService<Grade> {
    * @param relations Relations to be fetched
    * @returns grade object or null
    */
-  async getGradeByCondition(
-    where: FindOptionsWhere<Grade>,
-    relations?: string[],
-  ): Promise<Grade | null> {
-    return this.gradeRepository.findOne({
-      where,
-      relations,
-    });
+  async getAllGrades(where: FindOptionsWhere<Grade>): Promise<Grade[]> {
+    return await this.gradeRepository.find({ where });
   }
 
   /**
