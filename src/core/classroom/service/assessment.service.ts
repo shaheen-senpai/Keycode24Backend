@@ -34,9 +34,9 @@ export class AssessmentService extends BaseService<Assessment> {
   async getAssessmentById(
     options: FindOneOptions<Assessment>,
   ): Promise<Assessment> {
-    const assesment =  await this.assessmentRepository.findOneOrFail(options);
+    const assesment = await this.assessmentRepository.findOneOrFail(options);
     const avgScore = await this.getAverageScore(null, assesment.id);
-    return {...assesment, avgScore };;
+    return { ...assesment, avgScore };
   }
 
   async createAssessment(
@@ -102,26 +102,27 @@ export class AssessmentService extends BaseService<Assessment> {
   async getAllAssessments(
     where: FindOptionsWhere<Assessment>,
   ): Promise<Assessment[]> {
-    const assesments =  await this.assessmentRepository.find({ where, relations: ['createdBy', 'subject', 'grade'] });
+    const assesments = await this.assessmentRepository.find({
+      relations: ['createdBy', 'subject', 'grade', 'assessmentQuestions'],
+    });
+    const a=1;
     await Promise.all(
       assesments.map(async (assessment) => {
         assessment.avgScore = await this.getAverageScore(null, assessment.id);
-      })
+      }),
     );
     return assesments;
   }
 
-  async getAverageScore(
-    userId?: string |null,
-    assessmentId?: string |null,
-  ) {
+  async getAverageScore(userId?: string | null, assessmentId?: string | null) {
     const query = this.studentAssessmentRepository
-  .createQueryBuilder()
-  .select('AVG(score)', 'avgScore');
-  userId && query.andWhere('user_id = :userId', { userId });
-  assessmentId && query.andWhere('assessment_id = :assessmentId', { assessmentId });
-  const averagePrice = await query.getRawOne();
-  return averagePrice.avgScore ? parseInt(averagePrice.avgScore) : 0;
+      .createQueryBuilder()
+      .select('AVG(score)', 'avgScore');
+    userId && query.andWhere('user_id = :userId', { userId });
+    assessmentId &&
+      query.andWhere('assessment_id = :assessmentId', { assessmentId });
+    const averagePrice = await query.getRawOne();
+    return averagePrice.avgScore ? parseInt(averagePrice.avgScore) : 0;
   }
 
   public async updateAssessmentQuestions(

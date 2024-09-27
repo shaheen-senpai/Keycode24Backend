@@ -69,7 +69,7 @@ export class AssessmentController {
     try {
       const assessment = await this.assessmentService.getAssessmentById({
         where: { subjectId, id, gradeId },
-        relations: ['questions'],
+        relations: ['assessmentQuestions'],
       });
       return response.status(200).json({ assessment });
     } catch (error) {
