@@ -21,6 +21,13 @@ class Subject extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   public fileUrl!: string | null;
 
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    default: 'Class IX Probability',
+  })
+  public documentName!: string | null;
+
   @OneToMany(() => Assessment, (assessment) => assessment.subject)
   public subjectAssessments?: Assessment[];
 
