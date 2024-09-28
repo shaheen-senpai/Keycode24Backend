@@ -40,7 +40,7 @@ export class StudentAssessmentController {
           assessmentId,
           score,
         );
-      return response.status(201).json({ studentAssessment });
+      return response.status(201).json({ questions });
     } catch (error) {
       return response.status(400).json(error);
     }

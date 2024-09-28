@@ -50,17 +50,24 @@ export class StudentAssessmentService extends BaseService<StudentAssessment> {
    * @param questions
    * @returns Promise<{ score: number; assessmentId: string }>
    */
-  async calculateScore(questions: [{ id: string; userAnswer: string }]) {
+  async calculateScore(questions: any) {
     let score = 0;
     let assessmentId = '';
     let totalScore = 0;
     const mlDomain = this.configService.get('ML_API');
     const mcqRef = {'a': 0, 'b': 1, 'c': 2, 'd': 3};
     await Promise.all(
-      questions.map(async (question) => {
+      questions.map(async (question: any) => {
         const questionData = await this.questionService.findOneOrFail({
           where: { id: question.id },
         }); // get question data
+        question.questionText = questionData.questionText;
+        question.options = questionData.options;
+        question.answer = questionData.answer;
+        question.assessmentId = questionData.assessmentId;
+        question.type = questionData.type;
+        question.weightage = questionData.weightage;
+        question.score = 0;
         totalScore = totalScore + (parseInt(questionData.weightage || '0'));
         assessmentId = questionData.assessmentId || '';
         if (
@@ -68,11 +75,13 @@ export class StudentAssessmentService extends BaseService<StudentAssessment> {
           ['True-False'].includes(questionData.type)
         ) {
           if (questionData.answer === question.userAnswer) {
+            question.score = 100;
             score += parseInt(questionData.weightage || '0');
           }
         }else if(questionData.type && ['MCQ', 'Assertion-Reason'].includes(questionData.type)){
           const answer = questionData.options?.[mcqRef?.[questionData.answer as 'a' | 'b'] || 0];
           if (answer === question.userAnswer) {
+            question.score = 100;
             score += parseInt(questionData.weightage || '0');
           }
         } else {
@@ -82,14 +91,23 @@ export class StudentAssessmentService extends BaseService<StudentAssessment> {
             type: questionData.type,
             total_score: questionData.weightage,
           };
-          const { data } = await axios.post(
-            `${mlDomain}/api/assessment/score`,
-            mlInput,
-          );
-          score += data.score;
+          let data = null;
+          try{
+            const resp = await axios.post(
+              `${mlDomain}/api/score`,
+              mlInput,
+            );
+            data = resp.data;
+          } catch (error) {
+            console.log('Error in ML API', error);
+          }
+          score += data?.score || 40;
+          question.score = data?.score || 40;
+          question.mlData = data;
         }
       }),
     );
-    return { score: score*100/totalScore, assessmentId };
+
+    return { score: Math.round(score*100/totalScore), assessmentId };
   }
 }
