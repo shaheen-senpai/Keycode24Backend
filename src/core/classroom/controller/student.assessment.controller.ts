@@ -67,7 +67,7 @@ export class StudentAssessmentController {
         studentAssessments.map(async (el) => {
           el.assessment!.avgScore =
             await this.assessmentService.getAverageScore(
-              null,
+              studentId,
               el.assessment!.id,
             );
         }),
