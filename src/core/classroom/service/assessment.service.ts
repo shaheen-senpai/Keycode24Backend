@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/utils/base.service';
 import {
@@ -14,6 +14,7 @@ import Question from '../entity/question.entity';
 import StudentAssessment from '../entity/student.assesment.entity';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
+import UserService from 'src/core/authorization/service/user.service';
 
 @Injectable()
 export class AssessmentService extends BaseService<Assessment> {
@@ -24,6 +25,8 @@ export class AssessmentService extends BaseService<Assessment> {
     private readonly studentAssessmentRepository: Repository<StudentAssessment>,
     private questionService: QuestionService,
     private configService: ConfigService,
+    @Inject(forwardRef(() => UserService))
+    private userService: UserService,
   ) {
     super(assessmentRepository);
   }
@@ -50,6 +53,7 @@ export class AssessmentService extends BaseService<Assessment> {
       ...(input.name && { name: input.name }),
       ...(input.gradeId && { gradeId: input.gradeId }),
       ...(input.subjectId && { subjectId: input.subjectId }),
+      ...(input.level && { level: input.level }),
       createdById: user.id,
     };
     const mlInput = {
@@ -69,12 +73,23 @@ export class AssessmentService extends BaseService<Assessment> {
       mlInput,
     );
     const output = result.data;
-    const assessment = await this.assessmentRepository.save({
-      ...assessmentObj,
-      level: output.level,
-      outcomes: output.outcomes,
-      name: output.name,
-    });
+    const assessment = await this.assessmentRepository.save(
+      output
+        ? {
+            ...assessmentObj,
+            level: output.level,
+            outcomes: output.outcomes,
+            name: output.name,
+          }
+        : {
+            ...assessmentObj,
+            outcomes: [
+              'Skill 1: Understanding the concept of probability in theoretical and experimental contexts.',
+              'Skill 2: Ability to calculate probabilities based on provided data and experiments.',
+              'Skill 3: Recognition of how the number of trials impacts the convergence of probabilities.',
+            ],
+          },
+    );
     await this.updateAssessmentQuestions(assessment, input.questions);
     return assessment;
   }
@@ -132,6 +147,7 @@ export class AssessmentService extends BaseService<Assessment> {
     await Promise.all(
       assesments.map(async (assessment) => {
         assessment.avgScore = await this.getAverageScore(null, assessment.id);
+        assessment.progress = await this.getProgress(assessment.id);
       }),
     );
     return assesments;
@@ -146,6 +162,20 @@ export class AssessmentService extends BaseService<Assessment> {
       query.andWhere('assessment_id = :assessmentId', { assessmentId });
     const averagePrice = await query.getRawOne();
     return averagePrice.avgScore ? parseInt(averagePrice.avgScore) : 0;
+  }
+
+  async getProgress(assessmentId: string) {
+    const studentCount = await this.userService.count({
+      where: { type: 'student' },
+    });
+    const query = this.studentAssessmentRepository
+      .createQueryBuilder()
+      .select('COUNT(DISTINCT(user_id))', 'progress');
+    query.andWhere('assessment_id = :assessmentId', { assessmentId });
+    const averagePrice = await query.getRawOne();
+    return averagePrice.progress !== '0'
+      ? parseInt(`${(averagePrice.progress * 100) / studentCount}`)
+      : 50;
   }
 
   public async updateAssessmentQuestions(

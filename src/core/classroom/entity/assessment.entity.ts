@@ -51,6 +51,8 @@ class Assessment extends BaseEntity {
   public deletedAt?: Date;
 
   public avgScore: number | null = 0;
+
+  public progress: number | null = 50;
 }
 
 export default Assessment;
