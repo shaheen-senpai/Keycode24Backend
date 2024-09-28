@@ -144,10 +144,13 @@ export class AssessmentService extends BaseService<Assessment> {
       where,
       relations: ['createdBy', 'subject', 'grade', 'assessmentQuestions'],
     });
+    const studentCount = await this.userService.count({
+      where: { type: 'student' },
+    });
     await Promise.all(
       assesments.map(async (assessment) => {
         assessment.avgScore = await this.getAverageScore(null, assessment.id);
-        assessment.progress = await this.getProgress(assessment.id);
+        assessment.progress = await this.getProgress(assessment.id, studentCount);
       }),
     );
     return assesments;
@@ -164,10 +167,7 @@ export class AssessmentService extends BaseService<Assessment> {
     return averagePrice.avgScore ? parseInt(averagePrice.avgScore) : 0;
   }
 
-  async getProgress(assessmentId: string) {
-    const studentCount = await this.userService.count({
-      where: { type: 'student' },
-    });
+  async getProgress(assessmentId: string, studentCount: number) {
     const query = this.studentAssessmentRepository
       .createQueryBuilder()
       .select('COUNT(DISTINCT(user_id))', 'progress');
@@ -175,7 +175,7 @@ export class AssessmentService extends BaseService<Assessment> {
     const averagePrice = await query.getRawOne();
     return averagePrice.progress !== '0'
       ? parseInt(`${(averagePrice.progress * 100) / studentCount}`)
-      : 50;
+      : 0;
   }
 
   public async updateAssessmentQuestions(

@@ -51,8 +51,8 @@ export class StudentAssessmentService extends BaseService<StudentAssessment> {
    * @returns Promise<{ score: number; assessmentId: string }>
    */
   async calculateScore(questions: any) {
-    let score = 0;
     let assessmentId = '';
+    let earnedScore = 0;
     let totalScore = 0;
     const mlDomain = this.configService.get('ML_API');
     const mcqRef = {'a': 0, 'b': 1, 'c': 2, 'd': 3};
@@ -76,13 +76,13 @@ export class StudentAssessmentService extends BaseService<StudentAssessment> {
         ) {
           if (questionData.answer === question.userAnswer) {
             question.score = 100;
-            score += parseInt(questionData.weightage || '0');
+            earnedScore = earnedScore + parseInt(questionData.weightage || '0');
           }
         }else if(questionData.type && ['MCQ', 'Assertion-Reason'].includes(questionData.type)){
           const answer = questionData.options?.[mcqRef?.[questionData.answer as 'a' | 'b'] || 0];
           if (answer === question.userAnswer) {
             question.score = 100;
-            score += parseInt(questionData.weightage || '0');
+            earnedScore = earnedScore + parseInt(questionData.weightage || '0');
           }
         } else {
           const mlInput = {
@@ -101,13 +101,13 @@ export class StudentAssessmentService extends BaseService<StudentAssessment> {
           } catch (error) {
             console.log('Error in ML API', error);
           }
-          score += data?.score || 40;
-          question.score = data?.score || 40;
+          earnedScore = earnedScore + (data?.score || questionData.weightage);
+          question.score = data?.score || questionData.weightage;
           question.mlData = data;
         }
       }),
     );
 
-    return { score: Math.round(score*100/totalScore), assessmentId };
+    return { score: Math.round(earnedScore*100/totalScore), assessmentId };
   }
 }
